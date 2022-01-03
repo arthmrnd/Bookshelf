@@ -2,7 +2,11 @@ package com.api.bookshelf.service;
 
 import com.api.bookshelf.entity.Book;
 import com.api.bookshelf.enums.Category;
+import com.api.bookshelf.exception.BookAlreadyInBookshelf;
+import com.api.bookshelf.exception.BookIsntAvailableException;
+import com.api.bookshelf.exception.BookNotFoundException;
 import com.api.bookshelf.repository.BookRepository;
+import com.api.bookshelf.request.BookRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +17,13 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository repository;
+
+    public Book findById(String id) {
+        var optBook = repository.findById(id);
+        if (optBook.isPresent()) return optBook.get();
+        else throw new BookNotFoundException(id);
+
+    }
 
     public List<Book> findAll() {
         return repository.findAll();
@@ -38,11 +49,34 @@ public class BookService {
         return repository.findByIsAvailable(isAvailable);
     }
 
-    public Book addBook(Book book) {
+    public Book addBook(BookRequest request) {
+        var book = request.converter();
+        return saveBook(book);
+    }
+
+    private Book saveBook(Book book) {
         return repository.save(book);
     }
 
-    public void deleteBook(Long idBook) {
+    public Book getBook(String idBook) {
+        var book = findById(idBook);
+        if (book.getIsAvailable().equals(true)) {
+            book.setIsAvailable(false);
+            return saveBook(book);
+        }
+        else throw new BookIsntAvailableException(book.getTitle());
+    }
+
+    public Book putBook(String idBook) {
+        var book = findById(idBook);
+        if (book.getIsAvailable().equals(false)) {
+            book.setIsAvailable(true);
+            return saveBook(book);
+        }
+        else throw new BookAlreadyInBookshelf(book.getTitle());
+    }
+
+    public void deleteBook(String idBook) {
         repository.deleteById(idBook);
     }
 

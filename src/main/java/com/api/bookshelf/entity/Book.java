@@ -9,8 +9,6 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -25,8 +23,7 @@ public class Book {
 
     @Id
     @Column(name = "id_book")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idBook;
+    private String idBook;
     private String title;
     private String author;
     private String isbn;

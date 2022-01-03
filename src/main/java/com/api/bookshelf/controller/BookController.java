@@ -2,6 +2,7 @@ package com.api.bookshelf.controller;
 
 import com.api.bookshelf.entity.Book;
 import com.api.bookshelf.enums.Category;
+import com.api.bookshelf.request.BookRequest;
 import com.api.bookshelf.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,10 +22,6 @@ import java.util.List;
 @RequestMapping("/book")
 @RequiredArgsConstructor
 public class BookController {
-
-    //TODO improve POST method
-    //TODO implement PUT method
-    //TODO add exceptions
 
     private final BookService service;
 
@@ -59,12 +57,22 @@ public class BookController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public Book addBook(@RequestBody Book book) {
+    public Book addBook(@RequestBody BookRequest book) {
         return service.addBook(book);
     }
 
+    @PutMapping("/getbook")
+    public Book getBook(@RequestBody String idBook) {
+        return service.getBook(idBook);
+    }
+
+    @PutMapping("/putbook")
+    public Book putBook(@RequestBody String idBook) {
+        return service.putBook(idBook);
+    }
+
     @DeleteMapping("/delete/{id}")
-    public void deleteById(@PathVariable Long id) {
+    public void deleteById(@PathVariable String id) {
         service.deleteBook(id);
     }
 
